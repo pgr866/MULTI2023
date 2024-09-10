@@ -1,0 +1,44 @@
+  * Hay que poner el grupo al que se pertenece en la entrega. Según la rúbrica te tendría que suspender la actividad por esto.
+  
+  * Por favor, no mandes imágenes generadas por el programa, ya las genero yo.
+  
+  * Haz un make clean antes de enviar.
+
+  * No añades el fichero con el secuencial para ver de donde has sacado los datos secuenciales.
+  
+  * En el Run.sh no se necesita export OMP_NUM_THREADS
+
+
+%---------------------------------
+Bandera-PTH
+
+  * $ ./Bandera-PTh -r 763 -c 1024 -nt 4 -o España
+La última hebra hace rows (579,773) y se pasa de 767 con violación de segmento.
+Usa la rutina DivideVector.c que hay en el BB de clase.
+
+  * Haces una fila más. Debe ser de 0 a Rows-1
+
+  * Para ./Bandera-PTh -r 767 -c 1024 -nt 4 -o España La imagen de salida tiene líneas negras. Te falta la última fila en cada hebra.
+
+  * No completas el printf del PRINT=1 en la rutina de la hebra para saber si estás cogiendo bien las filas
+
+ * En la versión paralela no hace falta medir tiempos dentro del programa.
+
+  * ¿Porqué no usas DivideVector.c como digo en el README.md?
+
+
+%-------------------------------
+README-md
+
+  * Has paralelizado las columnas, lo que puede dar lugar a false sharing.
+
+Tanto speed-up no es razonable, 
+¿Porque usas la ejecución con una hebra en vez de la secuencial para T.Sec al calcular el speed-up?
+
+* Ya se da el Bandera.c que es la versión secuencial que devuelve el tiempo secuencial de la parte a paralelizar.
+
+  * Estás obteniendo un Sp mayor que el teórico cuando el paralelo tiene sobrecarga del paralelismo. 
+
+  * El paralelo con 1 hebra hace todos los pixeles y además hay que rellenar la estructura, generar la hebra, etc... No debería ser mejor que el secuencial. 
+
+  *Si el paralelo ejecuta más código, ¿porqué con una hebra tarda menos que el secuencial? ¿Cuantas hebras hay ejecutándose en el programa paralelo con -nt 1?

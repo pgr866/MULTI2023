@@ -1,0 +1,95 @@
+Hay que poner el grupo al que se pertenece en el texto de la entrega. Según la rubrica la entrega estaría suspensa por eso.
+ 
+%-------------------------------
+Run.sh
+  * El Run.sh no tiene todas las ejecuciones paralelas con distintos números de hebras.
+
+  * En el Run.sh con que haga una vez export OMP_PROC_BIND=true es suficiente.
+  
+ 
+%-------------------------------
+makefile:
+  * Si se miden tiempos hay que compilar sin el -g ni el -pg
+
+%-------------------------------
+Bandera-OMP.c
+
+ * Cuando se miden tiempos hay que quitar el PRINT=1 y poner PRINT=0 ya que la salida por pantalla consume mucho tiempo.
+ 
+  * El omp_get_wtime() no hace falta para este ejercicio.
+  
+  
+  * Si usas:
+    #ifdef _OPENMP
+    #pragma ...
+    #endif 
+    En vez de poner el #endif al final de los bucles anidados, los bucles se ejecutan en paralelo si se usa -fopenmp en la compilación y se ejecutarán en serie si no. 
+
+
+  * Si el pragma ocupa varias líneas hay que poner al final de línea "\", menos en la última.
+
+  * No usas default(none) en el pragma parallel
+
+* Puedes juntar los pragma paralell y for en un solo #pragma omp parallel for ....
+  
+  * Si usas for(int i=0;... no necesitas declarar i antes ni meterla en el private. Lo mismo para la j.
+
+  * No has hecho el collapse(2) por lo que solo has paralelizado el bucle externo.
+
+  * El #pragma omp parallel for .... debe estar entre #ifdef _OPENMP y #endif para que al compilar sin -fopenmp no de warnnings
+  
+  * Ya tienes el número de hebras en la variable de entorno, llamar a omp_get_num_threads() consume más tiempo.
+
+
+%-------------------------------------------
+README.md.
+
+..* Con 4 cores va ha ser difícil tener un Sp(4)>4 ya el el S.O. corre en un core. Pon 5 o 6 aunque tengas hyper-threading.
+
+  * Con 4 cores en la VM es difícil tener un speed-up cercano a 4 ya que el SO debe correr en al menos un core. Usa 5 o 6.
+
+ * Hay que medir los fallos de cache, cambios de contexto, etc y ver si mejoran. Debes usar  $perf stat -r 3 -d ...
+
+  * CsPar es el código a paralelizar y CsnPar el resto del código.  Hay que medir lo que tarda CsPar y su porcentaje será t(CsPar)/t.secuencial. %T(CsnPar)=1-%t(CsPar).
+
+  * Al calcular la memoria hay que dividir por 1024. Esto es memoria no ancho de banda. FilasxColsx3 char=1byte (RGB). 768*1024*3bytes/1024KB)/1024MB/1024Gb = 0.002197 GB
+
+  * El speed-up no se mide en segundos
+  * El Seed-up es el t.secuencial/t.paralelo
+
+  * %t(CsPar) es el porcentaje del tiempo del código a paralizar respecto al total.
+  
+  * La descripción de %t(CsnPar) está mal. Seria 1-%t(CsPar).
+
+  * ¿A qué te refieres con tiempo secuencual paralelo?
+  No sería tiempo del código secuencial a paralelizar.
+
+  * El speed-up no se calcula para las regiones paralelas si no para todo el programa.
+
+  * La mejora de speed-up con la carga de trabajo depende de si se amplia el porcentaje del tiempo secuencial de la parte a paralelizar y disminulle el porcentaje  del tiempo de la parte que no se va a paralelizar conforme aumenta el tamaño de la imagen.
+
+  * El chunk por defecto del static no es 1. Si se sabe el número de iteraciones y de hebras, ¿Cual es el chunk por defecto?
+
+  * ¿Cual es el chunk por defecto?
+
+  * El código no usa la opción -o España  para que se genere la imagen y el png. 
+
+  * Sin -o España, i,e sin salida todo casi todo es la sección paralela, así que no puedes tener unos tiempos parecidos al con -o España.
+  
+  * ¿Hay más código interno (que no se ve) en la versión paralela que en la secuencial?
+
+  * La escritura en disco ¿es secuencial o se puede paralelizar?
+  
+  * ¿Como cambian %T.CsPar %T.CsnPar?
+
+  * Si el número de iteraciones del bucle exterior es menor que el número de hebras el collapse permite que más hebras estén activas. ¿Es el caso?
+
+  * El chunk debe depender del numero de iteraciones y del número de hebras. Por ejemplo Niter/(i*p). i=1..n ya que varia con tamaños de la imagen distintos.
+
+  * ¿Como sabes que producirá menos fallos de cache si no los has medido? $perf stat -ddd <programa con parámetros> 
+
+  * Debes usar $perf stat -ddd <programa con parámetros> para ver si se producen más fallos de cache o ver si hay diferencias en otros aspectos. 
+  
+  * En el .tgz con la práctica tienes una hoja de cálculo que te ayudara a calcular SpA(p) y Sp(p).
+
+  * Hay que medir el rendimiento del programa con y sin collapse mediante $perf stat -r 3 -d Bandera-OMP ....

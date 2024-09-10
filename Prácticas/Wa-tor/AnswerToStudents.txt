@@ -1,0 +1,40 @@
+%----------------------------------------------
+ * Por favor, haz un make clean y borra las imágenes antes de enviar.
+
+%----------------------------------------------
+ * El makefile en la entrega debe estar sin -g ni -pg. Solo deben usarse para depuración y profiling, no para la entrega.
+
+%----------------------------------------------
+
+* El Run.sh no está en modo ejecutable (mira chmod)
+
+ * En el Run.sh debe haber solo una ejecución, si no se pisan las salidas de varios Wa-tor
+
+%-------------------------------------------------
+ * Programas dos veces el cálculo de Newi y Newj; y lo puedes hacer antes solo una vez.
+
+ * El profiling debe hacerse sin salidas por pantalla o a ficheros ya que esto consume mucho tiempo.
+
+ * El Profiling y MemProf hay que hacerlo para la versión de producción, es decir compilado sin -g, con PRINT=0 y sin salidas por pantallas con un número de iteraciones suficiente para que dure segundos, por ejemplo  $ Wa-tor -ni 1000.
+
+ * No has subido el Memprof.txt ni el Profiling.txt.
+ 
+ * Mira en la Sección de debugging en la carpeta "Introcucción al C" del curso.
+
+%------------------------------------
+ * Te falta que si un pez se reproduce el antiguo tiene 0 iteraciones.
+ 
+ * El nuevo pez ya está en la iteración siguiente no la actual. 
+
+ * Como tienes que hacer lo mismo en el if y el else de generar un nuevo pez o me muevo a una nueva celda en ocean.c y se va a ejecutar siempre:
+
+FreeXYIndex= lrand48() % NFoundFree;
+     
+          Newi = FreeX[FreeXYIndex];
+          Newj = FreeY[FreeXYIndex];
+
+Lo puedes ejecutar antes del if
+
+%-------------------------------------------------
+%-------------------------------------------------
+

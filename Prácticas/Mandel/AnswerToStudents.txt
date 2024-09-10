@@ -1,0 +1,1 @@
+Un for segido de otro for no necesita llaves en el primero. Las llaves se usan si hay más de una instrucción en el cuerpo.

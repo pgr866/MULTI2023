@@ -1,0 +1,64 @@
+ *Por favor, borra las imágenes y haz un make clean antes de enviar. 
+ 
+%-------------------------------
+Mirar el makefile:
+  *En el makefile tienes: 
+  #OMP = -fopenmp
+   OMP = -fopenmp
+
+%-------------------------------
+Mirar el Mandel-OMP.c
+
+  * No usas default(none) en el pragma parallel
+
+  * Si el pragma ocupa varias líneas hay que poner al final de línea "\", menos en la última.
+
+    * Las variables firstprivate deben ser shared ya que no se modifican y no hay que modificarlas de forma independiente por cada hebra en el cuerpo paralelo.
+
+  * Si usas for(int i=0;... no necesitas declarar i antes ni meterla en el private del pragma ya que se declara privada a la hebra. Lo mismo para la j.
+  
+  * Puedes juntar los pragma paralell y for en uno solo.
+   
+
+  * Tener -o influye poco no porque es un programa pequeño, sino porque el % de ejecución secuencial (salida en fichero y system) es pequeño frente al paralelo, y decrece conforme se incrementa MaxIter.
+
+  * El #ifdef _OPENMP debe finalizarse con #endif antes de los bucles for. Como está en la entrega los bucles no se ejecutarían en el caso paralelo.
+  
+  * Las variables i.j de los bucles son privadas por defecto. 
+  
+
+  * El barrier después de omp for es implícito y no hace falta ponerlo.
+
+  * El #pragma omp parallel for .... debe estar entre #ifdef _OPENMP y #endif para que al compilar sin -fopenmp no de warnnings
+  
+  * Es mejor usar  default(none) para poner explícitamente las variables shared y private en el omp for
+
+  * El chunk se puede poner por parámetro para no tener que compilar cada vez que cambie. 
+
+%-------------------------------------------
+Mirar el README.md.
+
+  * Si usas 4 cores en la VM el S.O. debe correr en alguno por lo que obtener un speed-up de 4 va ha ser difícil y más si los subprocesos están en el mismo core (hyperthreading). Usa 5 o 6 aunque tengas hyperthreading.
+
+  * Me parece que T.CsPar está demasiado cercano al T.Sec (secuencial total) cuando se está escibiendo la imagen.
+
+  * Los SpA(p) no los calculas bien.
+
+  * El T.CsPar no puede ser mayor que el T.Sec (secuencial total) ya que es parte de este.
+
+  * El chunk por defecto del static no es 1. Si se sabe el número de iteraciones y de hebras, ¿Cual es el chunk por defecto?
+
+  * ¿Cual es el chunk por defecto?
+  
+
+  * El dynamic es mejor porque se reparte mejor (dinámicamente) el trabajo computacional entre las hebras ya que el cómputo puede ser diferente para diferentes filas de pixeles y así las hebras acaban casi al mismo tiempo.
+  
+  *  Cuando se cambia el chunk, ¿Hay más o menos operaciones de reparto? ¿repartir cuesta o no? Por otro lado, si se reparten menos veces (mayor chunk) ¿puede haber más desbalanceo de carga o menos?
+
+  *¿Que significa que el chunk es 1 en el guided?
+  
+  * Para crear un fichero se usa normalmente $touch <fichero> en vez de $echo ""> fichero.
+
+  * En el nuevo .tgz con la práctica tienes una hoja de cálculo que te ayudara a calcular SpA(p) y Sp(p).
+  
+

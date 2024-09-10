@@ -1,0 +1,25 @@
+Hay que indicar en la entrega a qué grupo se pertenece. Estarías suspenso según la rúbrica.
+
+Hay que hacer un make clean antes de enviar.
+
+Hay mucha diferencia de tiempos. ¿Has chequeado que se hacen las 10000 iteraciones?
+
+Si llamas a pthread_barrier_wait(pMyData->pth_NextIter_Ends_barrier) en la línea 156, el main sale del barrier y pone RowToProcess=0 y espera en el pth_NextIter_Start_barrier, pero las hebras tienen que hacer aún dos dobles bucles y con RowToProcess=1 y 2 y que el main sobrescriba RowToProcess=0 hace que no se evalúen todas las filas y que algunas dos veces.
+
+Ejecuta
+time ./Wa-tor-PTh -r 12 -c 12 -nf 80 -ns 10 -ni 2 -nt 4
+Con PRINT=1 y verifica que se visitan todas las filas en cada iteración.
+
+Si usas el gnome-system-monitor  y ejecutas:
+time ./Wa-tor-PTh -ni 100000 -nt <cores>,
+Podrás ver como se cargan los cores.
+
+Se podría usar una sola variable mutex para los contadores y el Row, aunque la probabilidad de que las hebras esperen en él es mayor. El número de llamadas a mutex no varia.
+Se podrían usar solo 2 variables barrier (cada start y end se puede juntar en una) aunque el código sería menos informativo y el número de llamadas a barrier no cambiaría.
+
+No se pueden cambiar las llamadas a mutex y barrier, pero si el número de variables mutex o barrier.
+
+¿Has chequeado que todas las ejecuciones hacen 10000 iteraciones?
+
+Tienes que coger la parte real del $time programa.
+Si coges el user, estas acumulando los tiempos en cada core pero no en paralelo.

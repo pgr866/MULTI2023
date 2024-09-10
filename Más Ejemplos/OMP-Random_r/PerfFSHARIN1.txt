@@ -1,0 +1,42 @@
+[leo@miro OMP-Random_r]$ perf stat -r 3 -ddd  AddVectorInt-OMP_R_Vector -r 500000000
+SumVectorInt_OMP_R_Vector with 4 threads, Rows=500000000.
+Using calloc for pRandData.
+T. Init Vector    = 4.79481 sec.
+T. Add Vector     = 0.234862 sec.
+SumVectorInt      = 2250002712.
+SumVectorInt_OMP_R_Vector with 4 threads, Rows=500000000.
+Using calloc for pRandData.
+T. Init Vector    = 4.80949 sec.
+T. Add Vector     = 0.235953 sec.
+SumVectorInt      = 2250098218.
+SumVectorInt_OMP_R_Vector with 4 threads, Rows=500000000.
+Using calloc for pRandData.
+T. Init Vector    = 5.17204 sec.
+T. Add Vector     = 0.236028 sec.
+SumVectorInt      = 2250080120.
+
+ Performance counter stats for 'AddVectorInt-OMP_R_Vector -r 500000000' (3 runs):
+
+         16.495,06 msec task-clock:u                     #    3,154 CPUs utilized               ( +-  3,56% )
+                 0      context-switches:u               #    0,000 /sec                      
+                 0      cpu-migrations:u                 #    0,000 /sec                      
+           488.369      page-faults:u                    #   29,607 K/sec                       ( +-  0,00% )
+    64.570.289.984      cycles:u                         #    3,915 GHz                         ( +-  3,73% )  (30,74%)
+    48.451.961.524      instructions:u                   #    0,75  insn per cycle              ( +-  0,01% )  (38,43%)
+     5.501.416.975      branches:u                       #  333,519 M/sec                       ( +-  0,02% )  (38,46%)
+            84.459      branch-misses:u                  #    0,00% of all branches             ( +- 11,98% )  (38,47%)
+    13.575.064.554      L1-dcache-loads:u                #  822,977 M/sec                       ( +-  0,49% )  (38,48%)
+       405.519.617      L1-dcache-load-misses:u          #    2,99% of all L1-dcache accesses   ( +-  4,73% )  (15,42%)
+       140.341.939      LLC-loads:u                      #    8,508 M/sec                       ( +-  6,62% )  (15,39%)
+         1.066.880      LLC-load-misses:u                #    0,76% of all L1-icache accesses   ( +-  0,78% )  (23,08%)
+   <not supported>      L1-icache-loads:u                                                     
+           363.925      L1-icache-load-misses:u                                                 ( +-  2,13% )  (30,77%)
+    13.367.343.565      dTLB-loads:u                     #  810,385 M/sec                       ( +-  1,02% )  (30,71%)
+            51.306      dTLB-load-misses:u               #    0,00% of all dTLB cache accesses  ( +- 13,34% )  (15,39%)
+            38.282      iTLB-loads:u                     #    2,321 K/sec                       ( +- 28,51% )  (15,38%)
+             7.044      iTLB-load-misses:u               #   18,40% of all iTLB cache accesses  ( +-  8,85% )  (23,06%)
+   <not supported>      L1-dcache-prefetches:u                                                
+   <not supported>      L1-dcache-prefetch-misses:u                                           
+
+             5,230 +- 0,123 seconds time elapsed  ( +-  2,36% )
+

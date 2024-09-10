@@ -1,0 +1,103 @@
+%---------------------------------
+# General 
+  * Hay que poner el grupo al que se pertenece en la entrega. Según la rúbrica te tendría que suspender la actividad por esto.
+
+ * Por favor, haz un make clean antes de enviar.
+ * Por favor, no mandes Imágenes creadas.
+
+%---------------------------------
+# Wa-tor-OMP.c
+
+  * No hace falta medir tiempos dentro del programa ya que no se puede hablar de Sp().
+
+  * Las ejecuciones deben ser con PRINT=0 ya que los mensajes por pantalla consumen mucho tiempo.
+
+  
+  * Usas  srand48(time(NULL)); en vez de srand48(0); por lo que cada ejecución usa distintas secuencias de números aleatorios.
+
+  * srand48(time(0)); e lo mismo que srand48(time(NULL)); Debes usar srand48(0);
+  
+  * Solo usas srand48(0); para el paralelo.
+
+  * Si usas srand48(time(NULL)); El océano se inicializará cada vez se forma distinta. 
+
+  * int nthreads=omp_get_num_threads(); si debe estar en omp parallel  pero dentro de omp single para que lo ejecute una sola hebra, pero ¿Porque coges nthreads veces memoria para  pRandData?
+  
+  *int nthreads = omp_get_num_threads(); debe estar dentro de un opm parallel y un omp single para que lo ejecute solo una hebra en paralelo, si no devuelve 1 como te pasa a ti. Puedes usar omp_get_max_threads() si no quieres estar en un omp parallel.
+  
+  * Por eso te da error al ejecutarlo en paralelo ya que coges memoria para un vector de pRandData  de tamaño 1 y luego indexas con más de 1.
+  
+  * Inicializas muchas veces  las semillas al mismo valor ya que todas las hebras hacen el bucle. Seria en un bucle en secuencial i==0..nthreads srand48_r(i, pRandData[i]);
+
+  * Se puede usar una variable local RandRes en IterateFish e IterateShark ya que estas rutinas se ejecutan independientemente por cada hebra y las variables declaradas ahi son locales.
+
+  * pRandData[i] los inicializas en paralelo dentro de un #pragma parallel, sin for por lo que todas las hebras repiten el for. Debería estar en el código secuencial, sin #pragma. Los pragmas deberían estar dentro de #ifdef _OPENMP.
+ 
+  * Usas dos vectores para llevar la cuenta de los peces y tiburones, lo que está bien, pero no estás haciendo lo que se pide que es usar reduce. 
+  
+  * ¿Para qué pasas NThreads a IterateOcean?
+ 
+  * Solo están los pragma de computación en IterateOcean, no es necesario pero si quieres medir el tiempo secuencial del código a paralelizar solo debería medir antes y después de IterateOcean.
+
+ * free(pRandData); debería ser free((void *) pRandData);
+ 
+  *Mides el tiempo de todo el while, debería ser solo del IterateOcean e ir sumando el tiempo de cada iteración en iterateOcean. Pero no es necesario ya que no hay Speed-up.
+  
+
+%---------------------------------
+# ocean.c
+
+  * Si solo pones el pragma omp parallel for en algunos bucles doble, solo esos bucles dobles se realizan en paralelo.
+  
+  * Si pones todos los for j= dentro de un solo for i= y el pragma antes del for i, solo estás paralelizando el primer bucle. 
+
+  
+  *Para qué coges memoria de pRandData en IterateFish y/o IterateShark, y lo inicializas de nuevo si ya lo hiciste en el main  y lo has pasado como parámetro.
+  
+  * No generas un número aleatório con lrand48_r() para las hebras.
+  
+  * int hebras = omp_get_num_threads(); en IterateFish o Shark  es 1 ya que se ejecuta solo por cada hebra al estar ya desde IterateOcean en paralelo. Creo que estás pensando en omp_get_thread_num().
+
+  * En IterateFish ¿porqué haces otro omp pragma parallel si ya lo activaste en IterateOcean? Esto ya lo ejecuta una sola hebra. Lo mismo para IterateShark.
+
+  *Repites código: Newi=FreeX[FreeXYIndex]; Newj=FreeY[FreeXYIndex]; Sácalo de los #ifdef ya que se ejecuta siempre.
+
+  * ¿Porqué haces un bucle para obtener un número aleatorio con lrand48_r? Solo debes saber el número de tu hebra = mythread y  usar  lrand48_r(&pRandData[mythread],&r_result);
+
+  * Cuando hay bucles anidados se usa solo un pragma antes de los bucles anidados y se controla cuantos de los bucles anidados se paralelizan con collapse(x) si es que quieres usarlo.
+  
+  * Ha que usar  default(none) para poner explícitamente las variables shared y private en el omp for
+
+ *Si usas for (int i=0;... no hace falta declara i fuera del opm parallel for ni pasarla por private ya que es una variable local a cada hebra. Lo mismo para la j.
+  
+  * Las variables i,j de los bucles son privadas por defecto.
+  
+  * El barrier después de omp for es implícito y no hace falta ponerlo.
+  
+  * El #pragma omp parallel for .... debe estar entre #ifdef _OPENMP y #endif para que al compilar sin -fopenmp no de warnnings
+  
+  * El pragma omp paralell y el omp for se pueden juntar.
+  
+  * *pNFishes y *pNSharks se actualizan a la vez por la hebras. O las pones en secciones criticas o las reduces usando variable auxiliares.
+  
+  * firstprivate es para copiar el valor de la variable de fuera del cuerpo paralelo en una privada dentro. Si no se modifica la variable dentro, es shared.
+
+%--------------------------------------
+README.md 
+
+  * Usa mas de 4 cores, aunque tengas hyperthreading, el S.O debe correr en uno por lo que si pones 4 no tienes 4 libres.
+
+  * Para varias ejecuciones del mismo programa: (selecciona solo uno de) secuencial, 1, 2 o 4 hebras, (siempre con el mismo número de hebras) y las mismas semillas dan el mismo número de peces y tiburones, pero ¿Se puede hablar de speed-up cuando el número final de peces y tiburones es distinto para los distintos programas (comparar todos): secuencial y con 1, 2, 4 hebras?  
+
+  * Usando las mismas semillas, para el secuencial y un número de hebras distinto, las ejecuciones son distintas ya que los resultados son distintos. Aquí las ejecuciones del algoritmo son iguales si se ejecuta siempre el secuencial o se ejecuta siempre con el mismo número de hebras, pero en general no tiene porqué ya que "cuando se ejecutan las hebras" no es determinista. Por eso el trabajo realizado por el algoritmo no es el mismo en el secuencial que para 1,2 y 4 hebras por lo tanto no es comparable y no se puede hablar de speed-up.
+
+  * T.Sec no puede ser igual a T.CsPar.
+
+ * Aunque no es necesario medir tiempos dentro del código, ya que no se puede hablar de Sp(p), solo IterateOcean hace en paralelo el código que existe en el secuencial. Hay que acumular los tiempos de la llamada a IterateOcean para todas las iteraciones. 
+
+  * El T(p) se coge con la parte real del $time Wa-tor-OMP ....., al igual que el secuencial (compilando sin -fopenmp).
+  
+  * La versión paralela da peores tiempos que la secuencial. Puede ser a que anidas omp parallel.
+ 
+  * Cada ejecución debe acabar con 10000 iteraciones, sino no ha acabado correctamente.
+

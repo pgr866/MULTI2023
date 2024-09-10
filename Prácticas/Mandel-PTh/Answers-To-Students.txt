@@ -1,0 +1,22 @@
+  * Hay que poner el grupo al que se pertenece en la entrega. Según la rúbrica te tendría que suspender la actividad por esto.
+  * Haz un make clean y borra las imágenes antes de enviar.
+
+
+Rows/NThreads cambia con NThreads.
+El mejor chunksize debería ser distinto para distinto NThreads.
+
+La secuencia es  [256,128,64,32,16,8,4,2,1] si siempre consigues mejores tiempos, pero si para 16 es peor que 32, el siguiente es 24..... Mira la búsqueda dicotómica que se explicó en el READMe.md del Mandel-OMP. 
+
+No has chequeado que evalúes rows fuera del máximo Rows. Con -cs 500 tienes un core generado.
+Si el row actual + el chucksize es mayor que el numero de Rows, tendré que hacer el chunksize más pequeño ya que es el último.
+
+No hay que crear una hebra en el main, ya está corriendo. Simplemente llama a la función de las hebras con la struct para la hebra 0.
+
+Creo que con -cs 8 tardaría menos que con 1 para p=4.
+
+Probar: 
+time ./Mandel-PTh -r 11 -c 13 -mx -2 -my -2 -sx 4 -sy 4 -mi 100 -cs 3 -nt 4 -o
+que usa números primos para ver si se ejecuta correctamente y la imagen es correcta.
+Ver que coge chunks de 3.
+
+

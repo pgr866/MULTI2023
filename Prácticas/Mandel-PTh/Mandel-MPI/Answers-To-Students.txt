@@ -1,0 +1,23 @@
+Hay que indicar el grupo al que se pertenece en la entrega.
+
+No hace falta medir tiempos dentro del programa paralelo.
+
+Haz un make clean y borra las imágenes antes de enviar.
+
+Ejecutar con PRINT=1:
+$time mpirun -np 4 ./Mandel-MPI -r 1024 -c 1024 -mx -2 -my -2 -sx 4 -sy 4 -mi 1000 -o 
+para ver si la imagen se genera bien y trabajan todas las hebras.
+
+
+En el primer MPI_Recv que hace una tarea > 0 has usado Stat.MPI_SOURCE, que para esa tarea no está inicializado. Además, solo recibe y envía desde y hacia la 0, por lo que hay que poner 0 en vez de Stat.MPI_SOURCE.
+
+En el primer TODO se recibe del 0. Usas Stat.MPI_SOURCE que por casualidad se inicializa a 0.
+
+Usas Stat.MPI_SOURCE, cuando sabes que es con la tarea 0.
+
+Solo una tarea hace trabajo útil, la otra solo reparte.
+
+Para 3 tareas también mejora el Sp. 
+
+
+

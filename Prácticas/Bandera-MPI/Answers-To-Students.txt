@@ -1,0 +1,49 @@
+Hay que indicar el grupo al que se pertenece en la entrega.
+
+No hay que medir tiempos dentro del programa paralelo.
+
+Ejecutar 
+time mpirun -np 4 ./Bandera-MPI -r 400 -c 400 -o
+Con PRINT 1
+Cada tarea hace 40000 pixeles.
+Ver si la imagen es correcta. 
+
+Opción 1:
+La tarea 0 para la imaén 768x1024 coge toda la imagen:
+768x1024x 3(RGB)=    bytes
+/1024 = kB
+/1024 =MB
+/1024= 0.0022 GB
+Por lo qtienes los calculos mal.
+
+-np 1
+Mem. Tast=0(Gb) 	0.002197 	0.01676 	1.1176
+-np 2
+Mem. Tast>0(Gb) 	0.xxxxxx 	0.xxxxx 	0.37253
+-np 4
+Mem. Tast>0(Gb) 	0.xxxxxx 	0.xxxxx 	0.18626
+
+
+ No se como has calculado la memoria para la tarea 0 y las  tareas >0, pero no me da igual. Las tareas > 0 no cogen para todos los colores y no todo el tamaño. 
+
+Para -np 2 la memoria debe ser mayor que para -np 4 y tarea>0.
+
+
+La memoria consumida por las tareas >0 para -np 4 no puede ser igual que para -np 2 ya que depende del número de pixeles que le toque a cada tarea que es menor para -np 4.
+
+Es raro que tengas más speed-up que el teórico.
+
+El tiempo paralelo con una tarea debe ser ligeramente mayor que el secuencial, pero tu secuencial consume mucho tiempo para la bandera de mayor tamaño. Algo parece estar mal.
+
+Para la hebra 0 que tiene que reservar memoria para toda la imagen RGB es distinto que para las tareas >0 que solo reservan para los pixeles que le tocan y RG solo.
+
+La memoria para -np 2 no solo es dividir por 2, hay remanentes. Además, no se coge memoria para todos los colores.
+
+Opción 2: No liberas memoria de PosSubV ni SizeSubV.
+
+La memoria para las Task>0 se decrementa conforme aumenta -np ya que los subvectores son menores.
+
+Sp(p)> SpA(p). Puede ser ya que la memoria se gestiona de forma diferente para una que para más tareas.
+
+
+
